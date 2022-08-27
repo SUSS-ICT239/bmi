@@ -28,12 +28,12 @@ For powershell users,
 ```
 $env:FLASK_APP="app.py"
 $env:PYTHONPATH="." 
-$env:FLASK_ENV="development"
-flask run
+$env:FLASK_DEBUG=1
+flask run --host=0.0.0.0
 ```
 
 For command prompt users, 
 ```
-set FLASK_APP=app.py; set PYTHONPATH=.; set FLASK_ENV=development;
-flask run
+set FLASK_APP=app.py; set PYTHONPATH=.; set FLASK_DEBUG=1;
+flask run --host=0.0.0.0
 ```
