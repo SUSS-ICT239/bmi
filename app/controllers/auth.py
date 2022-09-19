@@ -30,10 +30,8 @@ def login():
     # if current_user.is_authenticated == True:
     #     return redirect(url_for('dashboard.render_dashboard'))
     form = RegForm()
-    print("IT REACHes HEREEEEEEEEEEEE first")
 
     if request.method == 'POST':
-        print("IT REACH HEREEEEEEEEEEEE")
         print(request.form.get('checkbox'))
         if form.validate():
             check_user = User.objects(email=form.email.data).first()
