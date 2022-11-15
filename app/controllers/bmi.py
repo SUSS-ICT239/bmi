@@ -11,7 +11,6 @@ import math
 
 bmi = Blueprint('bmi', __name__)
 
-
 # This controls controls the Ajax call to log a BMI 
 @bmi.route('/process',methods= ['POST'])
 def process():

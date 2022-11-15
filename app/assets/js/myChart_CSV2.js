@@ -16,41 +16,94 @@ $.ajax({
   },
   success: function(data, status, xhr) {
 
-    debugger
-    
     var chartDim = {};
-    
-    var chartDim = data.chartDim;
+      
+    var chartDim = data.chartDim; 
     var xLabels = data.labels;
 
-    var vLabels = [];
-    var vData = [];
+    // # New Output 
+    // # var chartDim = data.chartDim; 
+    // # {'usr_1': [[datetime1, 600], [datetime2, 600], ...], {'hotel_2': [[],[], ...]}  ...}
+    // # var xLabels = data.labels;
+    // # // [] 
 
-    let newValues =[]
+    debugger
+    var vLabels = []; 
+    // ['usr_1', 'usr_2', ...] 
+    var vData = [];
+    // [ [{'x': datetime_1, 'y':666}, {'x': datetime_2, 'y':1200} ...]
 
     for (const [key, values] of Object.entries(chartDim)) {
       vLabels.push(key);
-      let newValues = values.map(myFunction);
-      debugger;
-      vData.push(newValues);
-    } 
+      let xy = [];
+      for (let i = 0; i < values.length; i++) {
+        debugger
+        // let d = new Date(xLabels[i]+'+8');
+        let d = new Date(values[i][0]);
+        let year = d.getFullYear();
+        let month = ('' + (d.getMonth()+1)).padStart(2, '0');
+        let day = ('' + d.getDate()).padStart(2, '0');
+        // let hour = ('' + d.getHours()).padStart(2, '0');
+        // let mins = ('' + d.getMinutes()).padStart(2, '0');
+        // aDateTime = year + '-' + month + '-' + day + ' ' + hour + ':' + mins
+        aDateTime = year + '-' + month + '-' + day
+        xy.push({'x': aDateTime, 'y': values[i][1]});
+      }
+      vData.push(xy);
+    }
 
     debugger
+
     var myChart = new Chart(ctx, {
       data: {
-      labels: xLabels,
+      // labels: xLabels,
       datasets: []
       },
       options: {
           responsive: true,
-          maintainaspectratio: false
+          maintainaspectratio: false,
+        //   scales: {
+        //     x: {
+        //         type: 'time',
+        //         time: {
+        //             unit: 'hour',
+        //         }
+        //     },
+        //     y: {
+        //         type: 'category',
+        //         labels: xLabels,
+        //         grid: {
+        //           borderColor: "rgba(249, 238, 236, 0.74)"
+        //         }
+        //     }
+        // }
+        scales: {
+          x: {
+            type: 'time',
+            time: {
+              // "parser": "MM/DD/YYYY HH:mm",
+              parser: 'yyyy-MM-dd',
+            },
+            scaleLabel: {
+              display: true,
+              labelString: 'Date'
+            }
+          },
+          y: {
+            scaleLabel: {
+              display: true,
+              labelString: 'value'
+            }
+          }
+        }
       }
     });
 
     debugger
+    
     for (i= 0; i < vLabels.length; i++ ) {
       myChart.data.datasets.push({
-      label: vLabels[i],
+      label: vLabels[i], // Flight#
       type: "line",
       // borderColor: '#'+(0x1ff0000+Math.random()*0xffffff).toString(16).substr(1,6),
       borderColor: '#'+(0x1100000+Math.random()*0xffffff).toString(16).substr(1,6),
@@ -60,5 +113,54 @@ $.ajax({
       });
       myChart.update();
     }
+}
+})
 
-}})
+//     debugger
+    
+//     var chartDim = {};
+    
+//     var chartDim = data.chartDim; 
+//     // {'user_1: [bmi_1, bmi_2, -1, bmi_3, ...], 'user_2': [bmi_1, ...], ...}
+//     var xLabels = data.labels;
+//     // {date_1, date_2, ... }
+
+//     var vLabels = [];
+//     var vData = [];
+
+//     let newValues =[]
+
+//     for (const [key, values] of Object.entries(chartDim)) {
+//       vLabels.push(key);
+//       let newValues = values.map(myFunction);
+//       debugger;
+//       vData.push(newValues);
+//     } 
+
+//     debugger
+//     var myChart = new Chart(ctx, {
+//       data: {
+//       labels: xLabels,
+//       datasets: []
+//       },
+//       options: {
+//           responsive: true,
+//           maintainaspectratio: false
+//       }
+//     });
+
+//     debugger
+//     for (i= 0; i < vLabels.length; i++ ) {
+//       myChart.data.datasets.push({
+//       label: vLabels[i],
+//       type: "line",
+//       // borderColor: '#'+(0x1ff0000+Math.random()*0xffffff).toString(16).substr(1,6),
+//       borderColor: '#'+(0x1100000+Math.random()*0xffffff).toString(16).substr(1,6),
+//       backgroundColor: "rgba(249, 238, 236, 0.74)",
+//       data: vData[i],
+//       spanGaps: true
+//       });
+//       myChart.update();
+//     }
+
+// }})

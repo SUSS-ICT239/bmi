@@ -12,3 +12,6 @@ class BMIDAILY(db.Document):
     
     def updatedBMI(self, newBMI):
         return (newBMI + (self.averageBMI * self.numberOfMeasures)) / (self.numberOfMeasures + 1) 
+    
+    def getUserAverageBMI(self):
+        return self.user.name, self.averageBMI
