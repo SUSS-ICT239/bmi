@@ -36,17 +36,19 @@ def process():
             # number = bmidailyObjects[0].numberOfMeasures
             # bmidailyObjects[0].update(__raw__={'$set': {'numberOfMeasures': number + 1, 'averageBMI': new_bmi_average}})
 
-            new_bmi_average = bmidailyObjects.first().updatedBMI(bmilogObject.bmi)
-            bmidailyObjects.first().numberOfMeasures += 1
-            bmidailyObjects.first().averageBMI = new_bmi_average
+            the_bmidailyObject = bmidailyObjects.first()
+            new_bmi_average = the_bmidailyObject.updatedBMI(bmilogObject.bmi)
+            the_bmidailyObject.numberOfMeasures += 1
+            the_bmidailyObject.averageBMI = new_bmi_average
+            the_bmidailyObject.save()
 
         else:
             
             bmidailyObject = BMIDAILY(user=existing_user, date=today, numberOfMeasures=1, averageBMI = bmilogObject.bmi)
             bmidailyObject.save()
             
-    except:
-        print(f"No User with id {current_user.email} existed")
+    except Exception as e:
+        print(f"{e}")
         return jsonify({})
         
     return jsonify({'bmi' : bmilogObject.bmi})
