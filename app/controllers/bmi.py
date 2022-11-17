@@ -21,9 +21,9 @@ def process():
     today = date.today()
     now = datetime.now()
     
-    existing_user = User.objects(email=current_user.email).first()
+    try:
+        existing_user = User.objects(email=current_user.email).first()
     
-    if existing_user:
         bmilogObject = BMILOG(user=existing_user, datetime=now, weight=weight, height=height)
         bmilogObject.bmi = bmilogObject.computeBMI(request.form['unit'])
         bmilogObject.save()
@@ -31,11 +31,22 @@ def process():
         bmidailyObjects = BMIDAILY.objects(user=existing_user, date=today) #GET INFO
         
         if len(bmidailyObjects) >= 1:
-            new_bmi_average = bmidailyObjects[0].updatedBMI(bmilogObject.bmi)
-            number = bmidailyObjects[0].numberOfMeasures
-            bmidailyObjects[0].update(__raw__={'$set': {'numberOfMeasures': number + 1, 'averageBMI': new_bmi_average}})
+
+            # new_bmi_average = bmidailyObjects[0].updatedBMI(bmilogObject.bmi)
+            # number = bmidailyObjects[0].numberOfMeasures
+            # bmidailyObjects[0].update(__raw__={'$set': {'numberOfMeasures': number + 1, 'averageBMI': new_bmi_average}})
+
+            new_bmi_average = bmidailyObjects.first().updatedBMI(bmilogObject.bmi)
+            bmidailyObjects.first().numberOfMeasures += 1
+            bmidailyObjects.first().averageBMI = new_bmi_average
+
         else:
+            
             bmidailyObject = BMIDAILY(user=existing_user, date=today, numberOfMeasures=1, averageBMI = bmilogObject.bmi)
             bmidailyObject.save()
             
+    except:
+        print(f"No User with id {current_user.email} existed")
+        return jsonify({})
+        
     return jsonify({'bmi' : bmilogObject.bmi})
