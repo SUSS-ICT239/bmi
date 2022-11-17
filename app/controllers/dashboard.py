@@ -8,7 +8,7 @@ import io
 from statistics import mean
 
 from models.bmidaily import BMIDAILY
-from models.chart import CHART
+# from models.chart import CHART
 
 dashboard = Blueprint('dashboard', __name__)
 

@@ -16,7 +16,7 @@ app.register_blueprint(dashboard)
 app.register_blueprint(auth)
 app.register_blueprint(bmi)
 
-from models.chart import CHART
+# from models.chart import CHART
 from models.bmidaily import BMIDAILY
 from models.users import User
 import csv
