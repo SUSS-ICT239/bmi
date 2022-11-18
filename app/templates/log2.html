@@ -1,0 +1,44 @@
+{% from "_render_field.html" import render_field %}
+{% extends "base.html" %}
+{% block mainblock %}
+    <div class="card-header">
+        <h3>BMI Calculator</h3>
+    </div>
+    <div class="card-body">
+        <div class="container-fluid col-sm-12">
+            <form action="/book" method="post">
+                <div class="form-group row">
+                  <label for="weight" class="col-sm-3 col-form-label">Weight</label>
+                  <div class="col-sm-5">
+                    <input type="email" class="form-control" id="weight" placeholder="Weight (kg)">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="height" class="col-sm-3 col-form-label">Height</label>
+                  <div class="col-sm-5">
+                    <input type="height" class="form-control" id="height" placeholder="Height (cm or m)">
+                  </div>
+                </div>
+                 <div class="form-group row">
+                  <label for="spce" class="col-sm-3 col-form-label"></label>
+                    <div class="col-sm-5">
+                        <input type="radio" id="m" name="length" value="length" checked>
+                        <label for="meter">m</label>
+                        <input type="radio" id="cm" name="length" value="length">
+                        <label for="centimeter">cm</label>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="space" class="col-sm-3 col-form-label">Date & Time</label>
+                    <div class="col-sm-5">
+                      <input type="datetime-local" class="form-control" id="datetime">
+                    </div>
+                  </div>
+                <div class="form-group row form-check">
+                        <button type="submit" class="offset-sm-3 btn btn-primary">Log BMI</button>
+                </div>
+            
+              </form>
+            </div>
+    </div>
+{% endblock %}
