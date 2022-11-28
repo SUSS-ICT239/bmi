@@ -37,8 +37,8 @@ def log():
 
 @app.route('/log2')
 def log2():
-    return render_template('log2.html', name=current_user.name, panel="Logging BMI 2")
-
+    all_users = User.objects()
+    return render_template('log2.html', name=current_user.name, panel="Logging BMI 2", user_list=all_users)
  
 @app.route("/upload", methods=['GET','POST'])
 @login_required
