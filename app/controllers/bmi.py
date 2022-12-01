@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 from datetime import datetime, timedelta, date
 from flask_login import current_user
 from models.bmidaily import BMIDAILY
@@ -16,6 +16,7 @@ bmi = Blueprint('bmi', __name__)
 def process():
     weight  = float(request.form['weight'])
     height = float(request.form['height'])
+    unit = request.form['unit']
 
     # Since there is only one reading allowed in each day, the latest will be the log
     today = date.today()
@@ -24,8 +25,8 @@ def process():
     try:
         existing_user = User.objects(email=current_user.email).first()
     
-        bmilogObject = BMILOG(user=existing_user, datetime=now, weight=weight, height=height)
-        bmilogObject.bmi = bmilogObject.computeBMI(request.form['unit'])
+        bmilogObject = BMILOG(user=existing_user, datetime=now, weight=weight, height=height, unit=unit)
+        bmilogObject.bmi = bmilogObject.computeBMI()
         bmilogObject.save()
         
         bmidailyObjects = BMIDAILY.objects(user=existing_user, date=today) #GET INFO
@@ -55,21 +56,22 @@ def process():
 
 @bmi.route('/process2',methods= ['POST'])
 def process2():
+    
     weight  = float(request.form['weight'])
     height = float(request.form['height'])
+    unit = request.form['unit']
+    user_email = request.form['user_email']
+    date = request.form['date']
 
-    # Since there is only one reading allowed in each day, the latest will be the log
-    today = date.today()
-    now = datetime.now()
-    
+    date_object = datetime.strptime(date, '%Y-%m-%d').date()
+
     try:
-        existing_user = User.objects(email=current_user.email).first()
-    
-        bmilogObject = BMILOG(user=existing_user, datetime=now, weight=weight, height=height)
-        bmilogObject.bmi = bmilogObject.computeBMI(request.form['unit'])
+        existing_user = User.objects(email=user_email).first()    
+        bmilogObject = BMILOG(user=existing_user, datetime=date_object, weight=weight, height=height, unit=unit)
+        bmilogObject.bmi = bmilogObject.computeBMI()
         bmilogObject.save()
         
-        bmidailyObjects = BMIDAILY.objects(user=existing_user, date=today) #GET INFO
+        bmidailyObjects = BMIDAILY.objects(user=existing_user, date=date_object) #GET INFO
         
         if len(bmidailyObjects) >= 1:
 
@@ -85,12 +87,10 @@ def process2():
 
         else:
             
-            bmidailyObject = BMIDAILY(user=existing_user, date=today, numberOfMeasures=1, averageBMI = bmilogObject.bmi)
+            bmidailyObject = BMIDAILY(user=existing_user, date=date_object, numberOfMeasures=1, averageBMI = bmilogObject.bmi)
             bmidailyObject.save()
             
     except Exception as e:
         print(f"{e}")
-        return jsonify({})
         
-    return jsonify({'bmi' : bmilogObject.bmi})
-
+    return redirect(url_for('log2'))

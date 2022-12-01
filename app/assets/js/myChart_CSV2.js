@@ -1,10 +1,3 @@
-function myFunction(num) {
-  if (num == -1)
-  	return null;
-  else
-  	return num;
-}
-
 var ctx = document.getElementById('myChart').getContext('2d');
 
 $.ajax({

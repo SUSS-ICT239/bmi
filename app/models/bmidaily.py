@@ -13,18 +13,3 @@ class BMIDAILY(db.Document):
     def updatedBMI(self, newBMI):
         return (newBMI + (self.averageBMI * self.numberOfMeasures)) / (self.numberOfMeasures + 1) 
     
-    # @property
-    # def numberOfMeasures(self):
-    #     return self.numberOfMeasures
-    
-    # @numberOfMeasures.setter
-    # def numberOfMeasure(self, newNum):
-    #     self.numberOfMeasures = newNum
-    
-    # @property
-    # def averageBMI(self):
-    #     return self.averageBMI
-    
-    # @averageBMI.setter
-    # def averageBMI(self, newBMI):
-    #     self.averageBMI = newBMI

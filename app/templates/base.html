@@ -11,7 +11,13 @@
     <title>Admin Dashboard</title>
   </head>
   <body>
-    
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/custom.js')}}"></script>
+ 
     <!-- navbar -->
     <nav class="navbar navbar-expand-md navbar-light">
       <button class="navbar-toggler ml-auto mb-2 bg-light" type="button" data-toggle="collapse" data-target="#myNavbar">
@@ -37,14 +43,10 @@
                 <li class="nav-item"><a href="dashboard" class="nav-link text-white p-3 mb-2 sidebar-link"><i class="fas fa-chart-area text-light fa-lg mr-3"></i>Dashboard</a></li>
                 <li class="nav-item"><a href="log" class="nav-link text-white p-3 mb-2 sidebar-link"><i class="fas fa-address-card text-light fa-lg mr-3"></i>Log</a></li>
                 {% if current_user.name == "Admin" %}
-                <li class="nav-item"><a href="log2" class="nav-link text-white p-3 mb-2 sidebar-link"><i class="fas fa-address-card text-light fa-lg mr-3"></i>Log2</a></li>
-                    <select  name="parameter" id="selected_parameter" >
-                      <option value="all">Select One</option>
-                      {% for user in user_list %}
-                      <option value="{{user.name}}">{{user.name}}</option>
-                      {% endfor %}
-                    </select>	
                 <li class="nav-item"><a href="upload" class="nav-link text-white p-3 mb-2 sidebar-link"><i class="fas fa-cloud-upload-alt text-light fa-lg mr-3"></i>Upload</a></li>
+                <li class="nav-item"><a href="log2" class="nav-link text-white p-3 mb-2 sidebar-link"><i class="fas fa-address-card text-light fa-lg mr-3"></i>Log2</a></li>
+                {% block userDropdown %}
+                {% endblock %}
                 {% endif %}
               {% endif %}
               </ul>
@@ -115,12 +117,7 @@
     </section>
 
     <!-- end of cards -->
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
-    <script src="{{ url_for('static', filename='js/custom.js')}}"></script>
+
   </body>
 </html>
 

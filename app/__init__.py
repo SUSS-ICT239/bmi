@@ -9,7 +9,7 @@ def create_app():
     # app = Flask(__name__, template_folder="views")
 
     app.config['MONGODB_SETTINGS'] = {
-        'db':'db_name',
+        'db':'bmi',
         'host':'localhost'
     }
     # app.template_folder = 'views'

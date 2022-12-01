@@ -13,8 +13,15 @@ $.ajax({
     debugger
 
     var averages = data.averages;
+
+    // averages is like {name1: 123, name2: 234}
+
     var vLabels = [];
     var vData = [];
+
+    // The chart handled here is more straightforward
+    // xAxis is specified by vLabels as a list e.g. [name1, name2, ...]
+    // yAxis is specified by vData as a list, corresponding to labels, e.g., [123, 234, ...]
 
     for (const [key, values] of Object.entries(averages)) {
       vLabels.push(key);
