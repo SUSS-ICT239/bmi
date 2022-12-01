@@ -4,138 +4,79 @@ var ctx = document.getElementById('myChart').getContext('2d');
 var f = "static/js/DataSet1.2.csv";
 // var f = "./Data35.csv";
 
-function getReadings(data) {
-
-  debugger
-
-  var readings = {};
-  var bDate = new Date(3000, 0, 1);
-  var lDate = new Date(2000, 11, 31);
-
-  for (let i = 0; i < data.length -1; i++) {
-
-    var parts = data[i].date.split('-');
-    var myDate = new Date(parts[0], parts[1]-1, parts[2]);
-
-    if (myDate <= bDate) {
-        bDate = myDate;
-    }
-
-    if (myDate >= lDate) {
-        lDate = myDate;
-    }
-    
-    if ( readings[data[i].group] != null ) {
-        readings[data[i].group].push([data[i].date, data[i].value]);            
-    } else {
-        readings[data[i].group]=[[data[i].date, data[i].value]];
-    }
-    
-  }
-
-  // https://stackoverflow.com/questions/10221445/return-multiple-variables-from-a-javascript-function
-  //debugger
-  return [readings, bDate, lDate];
-
-}
-
-function dataPrep(readings, bDate, lDate) {
-
-  var chartDim = {};
-  var labels = [];
-
-  for (var d = bDate; d <= lDate; d.setDate(d.getDate() + 1)) {
-
-      var month = d.getUTCMonth() + 1; //months from 1-12
-      var day = d.getUTCDate() + 1;
-      var year = d.getUTCFullYear();
-
-      //debugger
-      var aDateString = year + "-" + month + "-" + day;
-      labels.push(aDateString);
-
-      for (const [key, value] of Object.entries(readings)) {
-
-          debugger
-          // https://stackoverflow.com/questions/455338/how-do-i-check-if-an-object-has-a-key-in-javascript 
-          if (!(key in chartDim)) {
-              chartDim[key]=[];
-          }
-          
-          i = 0;
-
-          let filled = false;
-
-          //debugger
-          for (const item of value) {
-
-              let parts=item[0].split('-');
-              let mydate = new Date(parts[0], parts[1] - 1, parts[2]); 
-              if (+mydate === +d) {
-                  debugger
-                  console.log(`${key}:${item[1]}`);
-                  chartDim[key].push(Number(item[1]));
-                  filled = true;
-              } else {
-                  if (+mydate > +d) {
-                      if (!filled) {
-                          chartDim[key].push(null);
-                      } 
-                      break;
-                  }
-              }
-          }
-      }
-  }
-
-  return [chartDim, labels];
-}
-
 
 d3.csv(f,
   // When reading the csv, I must format variables:
   function(d){
-    return { group : d.User, value : d.BMI, date: d.Date }
+    return { group : d.User, value : d.BMI, date: d.Date, num: d.Num }
   },
   // Now I can use this dataset:
   function(data) {
 
-    var bDate = new Date();
-    var lDate = new Date();
-    var readings = {};
-    var labels = [];
+  debugger
 
-    // https://stackoverflow.com/questions/10221445/return-multiple-variables-from-a-javascript-function
-    var aData = getReadings(data);
-    readings = aData[0];
-    bDate = aData[1];
-    lDate = aData[2];
-    
-    var chartDim = {};
-    debugger
-    var aData = dataPrep(readings, bDate, lDate);
-    chartDim = aData[0];
-    xLabels = aData[1];
+  // from an Array of Objects, each one like the folloiwng
+  // { group : user_1, value : 666, date: datetime_1, num: 2 }
+  // transform into 
+  // var vLabels = []; 
+  // // ['usr_1', 'usr_2', ...] 
+  // var vData = [];
+  // // [ [{'x': datetime_1, 'y':666}, {'x': datetime_2, 'y':1200}], ...]
 
-    var vLabels = [];
-    var vData = [];
+  var vLabels = []; 
+  var vData = []
 
-    for (const [key, value] of Object.entries(chartDim)) {
-      vLabels.push(key);
-      vData.push(value);
-    } 
+  // But first turn it into the following:
+  var sumData = {}
+  // {'usr_1': [{'x': datetime_1, 'y':666}, {'x': datetime_2, 'y':1200}],
+  //    'usr_2: [{'x': datetime_1, 'y':656}, {'x': datetime_2, 'y':1100}],
+  //    ...}
 
-    debugger
-    var myChart = new Chart(ctx, {
-      data: {
-      labels: xLabels,
-      datasets: []
-      },
-      options: {
-          responsive: true,
-          maintainaspectratio: false 
+  for (let x = 0; x < data.length; x++) { // data is an array of dictionary
+    let obj = sumData[data[x].group] || ""; // like dit.get[key] in python
+    if (obj === "") {
+      sumData[data[x].group]=[{'x': data[x].date, 'y':data[x].value}];
+    } else {
+      obj.push({'x': data[x].date, 'y':data[x].value});
+    }
+  }
+
+  // Then to the final format as specificed above
+  for (const [key, values] of Object.entries(sumData)) {
+    vLabels.push(key);
+    vData.push(values)
+  }
+
+  debugger
+
+  var myChart = new Chart(ctx, {
+    data: {
+    // labels: xLabels,
+    datasets: []
+    },
+    options: {
+      responsive: true,
+      maintainaspectratio: false,
+      scales: {
+        x: {
+          type: 'time',
+          time: {
+            parser: 'yyyy-MM-dd',
+          },
+          scaleLabel: {
+            display: true,
+            labelString: 'Date'
+          }
+        },
+        y: {
+          scaleLabel: {
+            display: true,
+            labelString: 'value'
+          }
+        }
       }
-    });
+    }
+  });
 
     debugger
     for (i= 0; i < vLabels.length; i++ ) {
