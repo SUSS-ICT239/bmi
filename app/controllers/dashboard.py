@@ -34,12 +34,17 @@ def getChartDim(user_email=None):
         chartDim = {}
 
         for bmidaily in bmidailys:
+            
             if not user_email or (bmidaily.user.user_email == user_email): 
                 bmis = chartDim.get(bmidaily.user.name)
                 if not bmis:
                     chartDim[bmidaily.user.name]=[[bmidaily.date, bmidaily.averageBMI]]
                 else:
                     bmis.append([bmidaily.date, bmidaily.averageBMI])
+            
+            # make sure the datetime line is sorted    
+            chartDim[bmidaily.user.name].sort(key=lambda x: x[0])
+        
         return chartDim, labels
     except:
         return None
@@ -75,6 +80,8 @@ def getAveDict():
     except:
         return None
 
+# chart2 GET and POST act in tandum, POST done via myChart_CSV2.js
+
 @dashboard.route('/chart2', methods=['GET', 'POST'])
 def chart2():
     if request.method == 'GET':
@@ -86,6 +93,8 @@ def chart2():
         
         return jsonify({'chartDim': chartDim, 'labels': labels})
 
+# chart3 GET and POST act in tandum, POST done via myChart_CSV3.js
+
 @dashboard.route('/chart3', methods=['GET', 'POST'])
 def chart3():
     if request.method == 'GET':
@@ -96,11 +105,15 @@ def chart3():
     
         aveDict = getAveDict()
         return jsonify({'averages': aveDict})
+
+# Only GET, /dashboard only produces the dashboard view 
    
 @dashboard.route('/dashboard')
 @login_required
 def render_dashboard():
     return render_template('dashboard.html', name=current_user.name, panel="Dashboard")
+
+# Only GET, /chart produces the BMI chart at the Frontend via myChart_CSV.js
 
 @dashboard.route('/chart')
 @login_required
