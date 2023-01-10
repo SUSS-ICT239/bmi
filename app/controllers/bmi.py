@@ -28,29 +28,28 @@ def process():
         # First store the bmilog, by default there the current user is already an user
         # So, if no user can be retrieved, then there is an exception
 
-        existing_user = getUser(email=current_user.email)
-        bmilogObject = BMILOG(user=existing_user, datetime=now, weight=weight, height=height, unit=unit)
+        existing_user = User.getUser(email=current_user.email)
+        bmilogObject = BMILOG.createBMILOG(user=existing_user, datetime=now, weight=weight, height=height, unit=unit, bmi=0.0)
         bmilogObject.bmi = bmilogObject.computeBMI()
         bmilogObject.save()
 
-        bmidailyObjects = BMIDAILY.objects(user=existing_user, date=today) #GET INFO
+        bmidaily = BMIDAILY.getBMIDAILY(user=existing_user, date=today) #GET INFO
 
         # Check whether there is existing bmidailylog for the user
 
-        if len(bmidailyObjects) >= 1:
+        if bmidaily:
 
             # if Yes, update the avergeBMI
-            the_bmidailyObject = bmidailyObjects.first()
-            new_bmi_average = the_bmidailyObject.updatedBMI(bmilogObject.bmi)
-            the_bmidailyObject.numberOfMeasures += 1
-            the_bmidailyObject.averageBMI = new_bmi_average
-            the_bmidailyObject.save()
+            new_bmi_average = bmidaily.updatedBMI(bmilogObject.bmi)
+            bmidaily.numberOfMeasures += 1
+            bmidaily.averageBMI = new_bmi_average
+            bmidaily.save()
 
         else:
 
             # if No, initialize the averageBMI
-            bmidailyObject = BMIDAILY(user=existing_user, date=today, numberOfMeasures=1, averageBMI = bmilogObject.bmi)
-            bmidailyObject.save()
+            BMIDAILY.createBMIDAILY(existing_user, date_object, 1, bmilogObject.bmi)
+            # bmidailyObject.save()
 
     except Exception as e:
         print(f"{e}")
@@ -81,31 +80,31 @@ def process2():
 
         # First store the bmilog, by default there the current user is already an user
         # So, if no user can be retrieved, then there is an exception
-        existing_user = getUser(email=current_user.email)
-        bmilogObject = BMILOG(user=existing_user, datetime=date_object, weight=weight, height=height, unit=unit)
+        existing_user = User.getUser(email=current_user.email)
+        bmilogObject = BMILOG.createBMILOG(user=existing_user, datetime=date_object, weight=weight, height=height, unit=unit, bmi=0.0)
         bmilogObject.bmi = bmilogObject.computeBMI()
         bmilogObject.save()
 
-        bmidailyObjects = BMIDAILY.objects(user=existing_user, date=date_object) #GET INFO
+        bmidaily = BMIDAILY.getBMIDAILY(user=existing_user, date=date_object) #GET INFO
 
         # Check whether there is existing bmidailylog for the user
 
-        if len(bmidailyObjects) >= 1:
+        if bmidaily:
 
             # if Yes, update the avergeBMI
-            the_bmidailyObject = bmidailyObjects.first()
-            new_bmi_average = the_bmidailyObject.updatedBMI(bmilogObject.bmi)
-            the_bmidailyObject.numberOfMeasures += 1
-            the_bmidailyObject.averageBMI = new_bmi_average
-            the_bmidailyObject.save()
+            new_bmi_average = bmidaily.updatedBMI(bmilogObject.bmi)
+            bmidaily.numberOfMeasures += 1
+            bmidaily.averageBMI = new_bmi_average
+            bmidaily.save()
 
         else:
 
             # if No, initialize the averageBMI
-            bmidailyObject = BMIDAILY(user=existing_user, date=date_object, numberOfMeasures=1, averageBMI = bmilogObject.bmi)
-            bmidailyObject.save()
+            BMIDAILY.createBMIDAILY(existing_user, date_object, 1, bmilogObject.bmi)
+            # bmidailyObject.save()
 
     except Exception as e:
         print(f"{e}")
+        return jsonify({})
 
     return redirect(url_for('bmi.log2'))

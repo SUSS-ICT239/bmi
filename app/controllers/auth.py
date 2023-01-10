@@ -16,7 +16,7 @@ def register():
             if existing_user is None:
                 hashpass = generate_password_hash(form.password.data, method='sha256')
                 User.createUser(email=form.email.data,password=hashpass, name=form.name.data)
-                return redirect(url_for('dashboard.render_dashboard'))
+                return redirect(url_for('auth.login'))
             else:
                 form.email.errors.append("User already existed")
                 render_template('register.html', form=form, panel="Register")    
