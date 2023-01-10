@@ -51,7 +51,7 @@ def upload():
         elif type == 'upload':
             
             for item in list(dict_reader):
-                existing_user = User.objects(email=item['User_email']).first()
+                existing_user = User.getUser(email=item['User_email'])
                 if existing_user:
                     measure_date=item['Date']
                     num_of_measure=item['Num']

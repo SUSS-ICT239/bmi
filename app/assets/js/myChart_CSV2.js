@@ -1,9 +1,14 @@
 var ctx = document.getElementById('myChart').getContext('2d');
 
+debugger
+// Retrieve email id from element with id 'myChart'
+var email_id = $("#myChart").attr("email_id")
+
 $.ajax({
   url:"/chart2",
   type:"POST",
-  data: {},
+  contentType: 'application/json;charset=UTF-8',
+  data: JSON.stringify({'email_id':  email_id}),
   error: function() {
       alert("Error");
   },
@@ -109,51 +114,3 @@ $.ajax({
 }
 })
 
-//     debugger
-    
-//     var chartDim = {};
-    
-//     var chartDim = data.chartDim; 
-//     // {'user_1: [bmi_1, bmi_2, -1, bmi_3, ...], 'user_2': [bmi_1, ...], ...}
-//     var xLabels = data.labels;
-//     // {date_1, date_2, ... }
-
-//     var vLabels = [];
-//     var vData = [];
-
-//     let newValues =[]
-
-//     for (const [key, values] of Object.entries(chartDim)) {
-//       vLabels.push(key);
-//       let newValues = values.map(myFunction);
-//       debugger;
-//       vData.push(newValues);
-//     } 
-
-//     debugger
-//     var myChart = new Chart(ctx, {
-//       data: {
-//       labels: xLabels,
-//       datasets: []
-//       },
-//       options: {
-//           responsive: true,
-//           maintainaspectratio: false
-//       }
-//     });
-
-//     debugger
-//     for (i= 0; i < vLabels.length; i++ ) {
-//       myChart.data.datasets.push({
-//       label: vLabels[i],
-//       type: "line",
-//       // borderColor: '#'+(0x1ff0000+Math.random()*0xffffff).toString(16).substr(1,6),
-//       borderColor: '#'+(0x1100000+Math.random()*0xffffff).toString(16).substr(1,6),
-//       backgroundColor: "rgba(249, 238, 236, 0.74)",
-//       data: vData[i],
-//       spanGaps: true
-//       });
-//       myChart.update();
-//     }
-
-// }})

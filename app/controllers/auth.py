@@ -12,11 +12,10 @@ def register():
     form = RegForm()
     if request.method == 'POST':
         if form.validate():
-            existing_user = User.objects(email=form.email.data).first()
+            existing_user = User.getUser(email=form.email.data)
             if existing_user is None:
                 hashpass = generate_password_hash(form.password.data, method='sha256')
-                hey = User(email=form.email.data,password=hashpass, name=form.name.data).save()
-                login_user(hey)
+                User.createUser(email=form.email.data,password=hashpass, name=form.name.data)
                 return redirect(url_for('dashboard.render_dashboard'))
             else:
                 form.email.errors.append("User already existed")
@@ -34,7 +33,7 @@ def login():
     if request.method == 'POST':
         print(request.form.get('checkbox'))
         if form.validate():
-            check_user = User.objects(email=form.email.data).first()
+            check_user = User.getUser(email=form.email.data)
             if check_user:
                 if check_password_hash(check_user['password'], form.password.data):
                     login_user(check_user)

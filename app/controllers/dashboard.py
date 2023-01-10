@@ -6,6 +6,7 @@ from app import db
 import csv
 import io
 from statistics import mean
+import json
 
 from models.bmidaily import BMIDAILY
 # from models.chart import CHART
@@ -35,18 +36,21 @@ def getChartDim(user_email=None):
 
         for bmidaily in bmidailys:
             
-            if not user_email or (bmidaily.user.user_email == user_email): 
+            if not user_email or (bmidaily.user.email == user_email): 
                 bmis = chartDim.get(bmidaily.user.name)
                 if not bmis:
                     chartDim[bmidaily.user.name]=[[bmidaily.date, bmidaily.averageBMI]]
                 else:
                     bmis.append([bmidaily.date, bmidaily.averageBMI])
             
-            # make sure the datetime line is sorted    
-            chartDim[bmidaily.user.name].sort(key=lambda x: x[0])
+        # make sure the datetime line is sorted    
+        for value in chartDim.values():
+            value.sort(key=lambda x: x[0])
         
         return chartDim, labels
+
     except:
+
         return None
 
 def getAveDict():
@@ -86,10 +90,19 @@ def getAveDict():
 def chart2():
     if request.method == 'GET':
         #I want to get some data from the service
-        return render_template('bmi_chart2.html', name=current_user.name, panel="BMI Chart")    #do nothing but to show index.html
+        return render_template('bmi_chart2.html', name=current_user.name, email_id=current_user.email, panel="BMI Chart")    #do nothing but to show index.html
     elif request.method == 'POST':
         
-        chartDim, labels = getChartDim()
+        # Retrieve data from AJAX POST
+        res = request.get_data("data")
+        d_token = json.loads(res)
+        email_id = d_token['email_id'] 
+        
+        # if it is admin, all BMIDAILY records are to be charted
+        if email_id == "admin@abc.com":
+            email_id = None
+            
+        chartDim, labels = getChartDim(user_email=email_id)
         
         return jsonify({'chartDim': chartDim, 'labels': labels})
 
