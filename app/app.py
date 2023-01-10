@@ -38,8 +38,7 @@ def upload():
     # if hte user just key in the /upload in the address
     if request.method == 'GET':
         return render_template("upload.html", name=current_user.name, panel="Upload")
-    elif request.method == 'POST':
-        
+    elif request.method == 'POST':      
         type = request.form.get('type')
         file = request.files.get('file')                    
         data = file.read().decode('utf-8')
