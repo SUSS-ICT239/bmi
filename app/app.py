@@ -55,7 +55,7 @@ def upload():
                     measure_date=item['Date']
                     num_of_measure=item['Num']
                     bmi=item['BMI']
-                    a_bmidaily = BMIDAILY(user=existing_user, date=measure_date, 
-                            numberOfMeasures=num_of_measure, averageBMI=bmi).save()
+                    a_bmidaily = BMIDAILY.createBMIDAILY(existing_user, measure_date, 
+                            num_of_measure, bmi)
         
         return render_template("upload.html", name=current_user.name, panel="Upload")

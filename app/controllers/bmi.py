@@ -80,7 +80,7 @@ def process2():
 
         # First store the bmilog, by default there the current user is already an user
         # So, if no user can be retrieved, then there is an exception
-        existing_user = User.getUser(email=current_user.email)
+        existing_user = User.getUser(email=user_email)
         bmilogObject = BMILOG.createBMILOG(user=existing_user, datetime=date_object, weight=weight, height=height, unit=unit, bmi=0.0)
         bmilogObject.bmi = bmilogObject.computeBMI()
         bmilogObject.save()
